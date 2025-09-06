@@ -1,0 +1,20 @@
+{
+  "season": "9999-99", 
+  "tiers": [
+    {
+      "name": "simple",
+      "depth_min": 1,
+      "pool": [
+        { "q": "What is 2 + 2?", "answers": ["4", "four"] }
+      ]
+    }
+  ],
+  "overrides": [
+    {
+      "match": "^alpha/y(/|$)",
+      "name": "secret",
+      "q": "Enter today's magic word: 'swordfish'.",
+      "answers": ["swordfish"]
+    }
+  ]
+}
