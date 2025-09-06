@@ -1,0 +1,10 @@
+<%-
+  include("layout", {
+    title,
+    body: `
+<div class="card err">
+  <p>Forbidden. You need to pass <code>/${need}</code> first.</p>
+  <p><a class="btn" href="${goto}">Go to gate /${need}</a></p>
+</div>
+`})
+%>

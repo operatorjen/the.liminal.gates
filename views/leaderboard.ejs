@@ -1,0 +1,68 @@
+<%-
+  include("layout", {
+    title,
+    body: `
+<div class="grid leaderboard">
+  <div class="card">
+    <h3>Top Depth</h3>
+    <table class="table">
+      <thead><tr><th>#</th><th>Actor</th><th>Max depth</th><th>Furthest</th></tr></thead>
+      <tbody>
+      ${byDepth.map((r, i) => `
+        <tr>
+          <td>${i+1}</td>
+          <td class="mono">${r.id}</td>
+          <td><span class="badge">${r.max_depth||0}</span></td>
+          <td class="mono">${r.furthest ? `/${r.furthest}` : "-"}</td>
+        </tr>`).join("")}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <h3>Most Gates Opened</h3>
+    <table class="table">
+      <thead><tr><th>#</th><th>Actor</th><th>Unique gates</th></tr></thead>
+      <tbody>
+      ${byOpened.map((r, i) => `
+        <tr>
+          <td>${i+1}</td>
+          <td class="mono">${r.id}</td>
+          <td><span class="badge">${r.score}</span></td>
+        </tr>`).join("")}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <h3>Recent</h3>
+    <table class="table">
+      <thead><tr><th>#</th><th>Actor</th><th>Last seen</th></tr></thead>
+      <tbody>
+      ${byRecent.map((r, i) => `
+        <tr>
+          <td>${i+1}</td>
+          <td class="mono">${r.id}</td>
+          <td>${new Date(Number(r.score||r.last||0)).toLocaleString()}</td>
+        </tr>`).join("")}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <h3>Popular Paths</h3>
+    <table class="table">
+      <thead><tr><th>#</th><th>Path</th><th>Hits</th></tr></thead>
+      <tbody>
+      ${pop.map((p, i) => `
+        <tr>
+          <td>${i+1}</td>
+          <td class="mono">/${p.path}</td>
+          <td><span class="badge">${p.count}</span></td>
+        </tr>`).join("")}
+      </tbody>
+    </table>
+  </div>
+</div>
+`})
+%>

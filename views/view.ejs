@@ -1,0 +1,14 @@
+<%-
+  include("layout", {
+    title,
+    body: `
+    <div class="card">
+      <p>${chainOk ? "" : "Chain not satisfied."}</p>
+    </div>
+
+    <div class="card">
+      <h2>Available gates:</h2>
+      <ul>${children.map(c=>`<li><a href="/gate/${c}">${c}</a></li>`).join("")}</ul>
+    </div>
+`})
+%>

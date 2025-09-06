@@ -1,0 +1,28 @@
+<%-
+  include("layout", {
+    title,
+    body: `
+<div class="card">
+  <p>Answer the question correctly to open this gate.</p>
+  ${difficulty ? `<p>Difficulty: <span class="badge">${difficulty}</span></p>` : ""}
+  ${errorMsg ? `<p class="hint">⛔ ${errorMsg}</p>` : ""}
+</div>
+
+<form class="gate-form" method="POST" action="/gate/${gatePath}/solve">
+  <input type="hidden" name="_csrf" value="${csrfToken}">
+  <input type="hidden" name="t0" id="t0" value="0">
+  <div class="hp"><label>Website<input name="website" autocomplete="off"></label></div>
+
+  <div class="card">
+    <p><strong>Question:</strong> ${question.q}</p>
+    <label>
+      <input name="answer" autocomplete="off" required placeholder="Your answer">
+    </label>
+  </div>
+
+  <button>Open Gate</button>
+</form>
+
+<script src="/public/gate.js" defer></script>
+`})
+%>
