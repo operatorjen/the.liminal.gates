@@ -1,0 +1,181 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  background: linear-gradient(45deg, rgb(250, 20, 100), rgb(19, 190, 199));
+  background-attachment: fixed;
+  margin: 0;
+}
+
+section {
+  width: 40vw;
+}
+
+.flat-layout section {
+  width: auto;
+}
+
+.card:empty {
+  display: none;
+}
+
+.card {
+  border: 0;
+  padding: 0;
+}
+
+.card a {
+  font-size: 0.95rem;
+}
+
+#messaging {
+  width: 55vw;
+  background-color: rgba(1, 1, 1, 0.8);
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1000;
+}
+
+#messaging p {
+  text-align: left;
+  padding: 5px;
+  font-size: 1rem;
+  color: rgba(202, 254, 255, 0.8);
+  margin: 0 0 35px 0;
+  position: relative;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  overflow-wrap: anywhere;
+  word-break: normal;
+  line-height: 1.4rem;
+}
+
+#messaging p a {
+  color: rgb(220, 255, 21);
+}
+
+#messaging p strong {
+  font-style: italic;
+  color: rgb(196, 231, 141);
+  font-size: 0.95rem;
+  font-weight: 100;
+  margin-right: 10px;
+  border-radius: 3px;
+  padding: 2px 8px;
+  background-color: rgba(11, 136, 73, 0.8);
+}
+
+#messagingContent {
+  padding: 15px;
+  overflow: auto;
+  height: calc(100vh - 120px);
+  padding-bottom: 80px;
+}
+
+#messaging input {
+  background-color: rgba(251, 252, 255, 0.799);
+  border-radius: 5px;
+  color: rgb(33, 33, 33);
+  border: none;
+  position: fixed;
+  bottom: 65px;
+  right: 5px;
+  width: 45%;
+}
+
+#messaging button {
+  position: fixed;
+  right: 10px;
+  bottom: 10px;
+  font-size: 1rem;
+}
+
+#media {
+  margin-bottom: 60vh;
+  border: 0;
+  border-radius: 0;
+}
+
+#media img,
+#media video {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 0;
+}
+
+#ttl {
+  position: fixed;
+  bottom: 10px;
+  right: 120px;
+  font-size: 0.85rem;
+}
+
+@media (min-width: 801px) {
+  .wrap {
+    margin-right: 56vw;
+  }
+}
+
+@media screen and (max-width: 800px) {
+  section {
+    width: auto;
+  }
+
+  h2 {
+    font-size: 1rem;
+  }
+
+  .card ul li a {
+    padding: 5px;
+  }
+
+  #ttl {
+    right: auto;
+    left: 10px;
+  }
+
+  #messaging {
+    top: auto;
+    left: 0;
+    height: 60vh;
+    right: 0;
+    width: 100vw;
+  }
+
+  body {
+    background-attachment: scroll;
+  }
+
+  #messagingContent {
+    margin-bottom: 0;
+    height: calc(60vh - 80px);
+  }
+
+  #messaging input {
+    left: 10px;
+    right: auto;
+    bottom: 35px;
+    width: 70vw;
+  }
+}
+
+@supports (padding: max(0px)) {
+  #messaging {
+    padding-bottom: max(15px, env(safe-area-inset-bottom));
+  }
+  #messaging input,
+  #messaging button {
+    margin-bottom: env(safe-area-inset-bottom);
+  }
+}
+
+#messaging input:focus-visible,
+#messaging button:focus-visible {
+  outline: 2px solid rgba(220, 255, 21, 0.9);
+  outline-offset: 2px;
+}

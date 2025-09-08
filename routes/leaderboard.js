@@ -57,6 +57,10 @@ leaderboardRouter.get("/", async (req, res) => {
     byOpened,
     byRecent,
     breadcrumb: [],
+    styles: "",
+    bodyClass: "",
+    gatePath: "",
+    scripts: "",
     pop,
   });
 });

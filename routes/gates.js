@@ -5,6 +5,7 @@ import { trackGateView, trackGatePass, trackViewAccess } from "../utils/telemetr
 import { getQuestionForPath, isCorrectAnswer } from "../utils/questions.js";
 import { makeBreadcrumb, EMOJI } from "../utils/crumbs.js";
 import { forceEmojiPresentationPath, normalizeKeyPath, splitPath, asKeyPath, asCanonPath, isEmojiPath } from "../utils/emojiPath.js";
+import { themeForPath } from "../utils/themes.js";
 
 export const gatesRouter = express.Router();
 
@@ -30,7 +31,10 @@ gatesRouter.get(/^\/gate\/(.*)$/, async (req, res) => {
   const openedNorm = (state.opened || []).map(normalizeKeyPath);
   const prereq = chainFor(keyPath).slice(0, -1);
   const prereqOk = chainSatisfied({ ...state, opened: openedNorm }, prereq);
+  const viewPath = encodeURI(canon);
+  const theme = themeForPath(viewPath) || {};
 
+  
   if (openedNorm.includes(keyPath)) {
     return res.redirect(`/view/${encodeURI(canon)}`);
   }
@@ -48,26 +52,35 @@ gatesRouter.get(/^\/gate\/(.*)$/, async (req, res) => {
       title: "Forbidden",
       need: firstMissing,
       breadcrumb: crumbs,
-      goto: `/gate/${gotoCanon}`
+      gatePath,
+      goto: `/gate/${gotoCanon}`,
+      styles: theme.styles,
+      scripts: theme.scripts,
+      inlineCss: theme.inlineCss,
+      inlineJs: theme.inlineJs,
+      bodyClass: theme.bodyClass
     });
   }
 
   trackGateView(req, gatePath).catch(() => {});
 
-  const viewPath = encodeURI(canon);
   const { label: difficulty, question } = await getQuestionForPath(keyPath);
   
   const { crumbs } = makeBreadcrumb(viewPath);
 
   return res.render("gate", {
-    title: `Gate: /${gatePath}`,
+    title: "",
     gatePath,
     opened: state.opened,
     breadcrumb: crumbs,
     csrfToken,
     question,
     difficulty,
-    errorMsg: null
+    errorMsg: null,
+    styles: theme.styles,
+    scripts: theme.scripts,
+    bodyClass: "flat-layout",
+    wsEnabled: !!theme.ws
   });
 });
 
@@ -106,16 +119,22 @@ gatesRouter.post(/^\/gate\/(.*)\/solve$/, async (req, res) => {
     ensureCsrfSecret(req, res);
     const csrfToken = createCsrfToken(req, res);
     const { label: difficulty, question } = await getQuestionForPath(keyPath);
+    const theme = themeForPath(keyPath) || {};
+
 
     return res.status(400).render("gate", {
-      title: `Gate: /${canonPath}`,
+      title: "",
       gatePath: canonPath,
       opened: state.opened,
       breadcrumb: crumbs,
       csrfToken,
       difficulty,
       question,
-      errorMsg: "Incorrect answer. Try again."
+      errorMsg: "Incorrect answer. Try again.",
+      styles: theme.styles,
+      scripts: theme.scripts,
+      bodyClass: theme.bodyClass,
+      wsEnabled: false
     });
   }
 
@@ -135,7 +154,7 @@ gatesRouter.get(/^\/view\/(.*)$/, async (req, res) => {
 
   if (raw !== canon) {
     const prefix = req.baseUrl || "";
-    return res.redirect(308, `${prefix}/gate/${encodeURI(canon)}`);
+    return res.redirect(308, `${prefix}/view/${encodeURI(canon)}`);
   }
 
   const viewPath = canon;
@@ -152,12 +171,18 @@ gatesRouter.get(/^\/view\/(.*)$/, async (req, res) => {
     const have = new Set(openedNorm);
     const missing = fullChain.filter(p => !have.has(p));
     const firstMissing = missing[0];
+    const theme = themeForPath(viewPath) || {};
 
     return res.status(403).render("forbidden", {
       title: "Forbidden",
       need: firstMissing,
       breadcrumb: crumbs,
-      goto: `/gate/${encodeURI(forceEmojiPresentationPath(firstMissing))}`
+      gatePath: "",
+      goto: `/gate/${encodeURI(forceEmojiPresentationPath(firstMissing))}`,
+      styles: theme.styles,
+      scripts: theme.scripts,
+      bodyClass: theme.bodyClass,
+      wsEnabled: false
     });
   }
 
@@ -166,6 +191,7 @@ gatesRouter.get(/^\/view\/(.*)$/, async (req, res) => {
     forceEmojiPresentationPath(`${keyPath}/${sym}`)
   );
 
+  const theme = themeForPath(keyPath) || {};
   res.render("view", {
     title: "",
     breadcrumb: crumbs,
@@ -173,6 +199,12 @@ gatesRouter.get(/^\/view\/(.*)$/, async (req, res) => {
     chainOk: true,
     opened: state.opened,
     children,
-    nextHint: "Pick another branch, or continue further on this one."
+    nextHint: "Pick another branch, or continue further on this one.",
+    styles: theme.styles,
+    scripts: theme.scripts,
+    inlineCss: theme.inlineCss,
+    inlineJs: theme.inlineJs,
+    bodyClass: theme.bodyClass,
+    wsEnabled: !!theme.ws
   });
 });

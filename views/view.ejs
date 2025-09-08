@@ -1,14 +1,16 @@
 <%-
   include("layout", {
-    title,
+    title, styles, scripts, inlineCss, inlineJs, bodyClass,
     body: `
-    <div class="card">
-      <p>${chainOk ? "" : "Chain not satisfied."}</p>
-    </div>
+    <div class="card">${chainOk ? "" : "<p>Chain not satisfied.</p>"}</div>
 
     <div class="card">
-      <h2>Available gates:</h2>
+      ${!wsEnabled ? `<h2>Available gates:</h2>` : ``}
       <ul>${children.map(c=>`<li><a href="/gate/${c}">${c}</a></li>`).join("")}</ul>
     </div>
+
+    ${wsEnabled ? `
+    <script src="/ws/socket.io.js"></script>
+    <script defer src="/public/ws.js"></script>` : ``}
 `})
 %>
