@@ -1,0 +1,30 @@
+<%-
+  include("layout", {
+    title,
+    body: !auto ? `
+<div class="card">
+  <form method="POST" action="/jump" autocomplete="off">
+    <input type="hidden" name="_csrf" value="${csrfToken}">
+    <textarea id="token" name="token" rows="6" cols="64" autofocus></textarea><br>
+    <button class="btn" type="submit">Jump</button>
+  </form>
+</div>` : `
+<div class="card">
+  <form id="f" method="POST" action="/jump">
+    <input type="hidden" name="_csrf" value="${csrfToken}">
+    <input type="hidden" name="token" value="${String(token ?? "")
+      .replace(/&/g,"&amp;")
+      .replace(/</g,"&lt;")
+      .replace(/>/g,"&gt;")
+      .replace(/"/g,"&quot;")}">
+    <noscript><button class="btn" type="submit">Jump</button></noscript>
+  </form>
+  <script nonce='${String(nonce ?? "")
+      .replace(/&/g,"&amp;")
+      .replace(/</g,"&lt;")
+      .replace(/>/g,"&gt;")
+      .replace(/'/g,"&#39;")}'>document.getElementById("f").submit()</script>
+  <p class="muted" style="opacity:.7">Claiming your pass…</p>
+</div>
+`})
+%>

@@ -4,7 +4,7 @@ export function themeForPath(keyPath) {
   const key   = normalizeKeyPath(keyPath);
   const depth = key.split("/").filter(Boolean).length;
 
-  if (depth >= 5) {
+  if (depth >= 6) {
     return {
       name: "abyss",
       bodyClass: "theme-abyss",

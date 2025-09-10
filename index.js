@@ -16,11 +16,11 @@ import { chainFor, chainSatisfied } from "./utils/jwt.js";
 import jwt from "jsonwebtoken";
 
 import { gatesRouter } from "./routes/gates.js";
-import jumpRouter from "./routes/jumps.js";
 import { leaderboardRouter } from "./routes/leaderboard.js";
 import "./utils/redis.js"; 
 import { makeBreadcrumb, EMOJI } from "./utils/crumbs.js";
 import { themeForPath } from "./utils/themes.js";
+import jumpRouter from "./routes/jumps.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
