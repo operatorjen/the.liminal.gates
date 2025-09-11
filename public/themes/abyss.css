@@ -14,6 +14,13 @@ section {
   width: 40vw;
 }
 
+h2 {
+  margin-top: 50px;
+  font-size: 1.3rem;
+  color: rgba(255, 255, 255, 0.8);
+  font-weight: normal;
+}
+
 .flat-layout section {
   width: auto;
 }
@@ -25,10 +32,12 @@ section {
 .card {
   border: 0;
   padding: 0;
+  background-color: transparent;
 }
 
-.card a {
+.card ul li a {
   font-size: 0.95rem;
+  background-color: rgba(1, 1, 1, 0.8);
 }
 
 #messaging {
@@ -41,7 +50,7 @@ section {
   z-index: 1000;
 }
 
-#messaging p {
+#messaging p, #messaging .game {
   text-align: left;
   padding: 5px;
   font-size: 1rem;
@@ -56,6 +65,15 @@ section {
 
 #messaging p a {
   color: rgb(220, 255, 21);
+}
+
+#messaging .game {
+  padding: 10px;
+  border: 1px solid #0ff;
+  border-radius: 3px;
+  display: block;
+  color: #0ff;
+  font-size: 1.2rem;
 }
 
 #messaging p strong {

@@ -12,7 +12,7 @@ import { createServer } from "http";
 import { Server } from "socket.io";
 import { redis } from "./utils/redis.js";
 import { normalizeKeyPath } from "./utils/emojiPath.js";
-import { chainFor, chainSatisfied } from "./utils/jwt.js";
+import { chainFor, chainSatisfied, readGateState, addRecent, saveState } from "./utils/jwt.js";
 import jwt from "jsonwebtoken";
 
 import { gatesRouter } from "./routes/gates.js";
@@ -54,10 +54,38 @@ app.use((req, res, next) => {
   next();
 });
 
-app.get("/", (req, res) => {
-  const viewPath = (req.params[0] || "").split("/").filter(Boolean).join("/");
-  const { crumbs } = makeBreadcrumb(viewPath);
+app.use(async (req, res, next) => {
+  try {
+    const state = await readGateState(req);
+    writeGateCookie(res, state);
+    req.gateState = state;
+  } catch { }
+  next();
+});
 
+app.use(async (req, _, next) => {
+  if (req.method !== "GET") return next();
+  const m = req.path.match(/^\/(?:view|gate)\/(.+)/);
+  if (!m) return next();
+  try {
+    const keyPath = normalizeKeyPath(m[1]);
+    if (!keyPath) return next();
+    const state = await readGateState(req);
+    const nextState = addRecent(state, keyPath);
+    saveState(nextState);
+  } catch { }
+  next();
+});
+
+app.get("/", async (req, res) => {
+  const viewPath = (req.params[0] || "").split("/").filter(Boolean).join("/");
+  const state = await readGateState(req);
+  const recent = (state.recent || []).map(p => ({
+    label: p,
+    href: "/view/" + p.split("/").map(encodeURIComponent).join("/")
+  }));
+
+  const { crumbs } = makeBreadcrumb(viewPath);
   const theme = themeForPath(viewPath) || {};
 
   res.render("view", {
@@ -73,7 +101,8 @@ app.get("/", (req, res) => {
     inlineCss: theme.inlineCss,
     inlineJs: theme.inlineJs,
     bodyClass: theme.bodyClass,
-    wsEnabled: !!theme.ws
+    wsEnabled: !!theme.ws,
+    recent
   });
 });
 
@@ -111,6 +140,8 @@ ws.use(async (socket, next) => {
     const payload = jwt.verify(token, process.env.JWT_SECRET, { algorithms: ["HS256"] });
     const sid = payload?.sid;
     if (!sid) return next(new Error("bad sid"));
+
+    await redis.pexpire(SKEY(sid), ONE_WEEK_MS + 24 * 3600 * 1000).catch(() => {});
 
     const keyPath = normalizeKeyPath(String(socket.handshake.auth?.keyPath || ""));
     if (!keyPath) return next(new Error("no path"));

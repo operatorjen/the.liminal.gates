@@ -34,7 +34,6 @@ gatesRouter.get(/^\/gate\/(.*)$/, async (req, res) => {
   const viewPath = encodeURI(canon);
   const theme = themeForPath(viewPath) || {};
 
-  
   if (openedNorm.includes(keyPath)) {
     return res.redirect(`/view/${encodeURI(canon)}`);
   }
@@ -65,7 +64,6 @@ gatesRouter.get(/^\/gate\/(.*)$/, async (req, res) => {
   trackGateView(req, gatePath).catch(() => {});
 
   const { label: difficulty, question } = await getQuestionForPath(keyPath);
-  
   const { crumbs } = makeBreadcrumb(viewPath);
 
   return res.render("gate", {
@@ -182,7 +180,8 @@ gatesRouter.get(/^\/view\/(.*)$/, async (req, res) => {
       styles: theme.styles,
       scripts: theme.scripts,
       bodyClass: theme.bodyClass,
-      wsEnabled: false
+      wsEnabled: false,
+      recent: []
     });
   }
 
@@ -205,6 +204,7 @@ gatesRouter.get(/^\/view\/(.*)$/, async (req, res) => {
     inlineCss: theme.inlineCss,
     inlineJs: theme.inlineJs,
     bodyClass: theme.bodyClass,
-    wsEnabled: !!theme.ws
+    wsEnabled: !!theme.ws,
+    recent: [],
   });
 });

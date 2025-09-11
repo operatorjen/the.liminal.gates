@@ -1,0 +1,14 @@
+body {
+  position: relative;
+  isolation: isolate;
+  background: rgb(225, 22, 73);
+}
+
+body::before {
+  content: "🧩️";
+  position: fixed;
+  font-size: min(60vmin, 800px);
+  opacity: 0.9;
+  pointer-events: none;
+  z-index: -1;
+}

@@ -1,16 +1,35 @@
 <%-
   include("layout", {
-    title, styles, scripts, inlineCss, inlineJs, bodyClass,
+    title,
     body: `
-    <div class="card">${chainOk ? "" : "<p>Chain not satisfied.</p>"}</div>
-
+  ${Array.isArray(opened) && opened.length ? `
     <div class="card">
-      ${!wsEnabled ? `<h2>Available gates:</h2>` : ``}
-      <ul>${children.map(c=>`<li><a href="/gate/${c}">${c}</a></li>`).join("")}</ul>
+      <h2>Opened gates</h2>
+      <ul class="opened">
+        ${opened.map(p => {
+          const href = "/view/" + String(p).split("/").map(encodeURIComponent).join("/");
+          return `<li><a href="${href}">${p}</a></li>`;
+        }).join("")}
+      </ul>
     </div>
+  ` : ""}
 
-    ${wsEnabled ? `
-    <script src="/ws/socket.io.js"></script>
-    <script defer src="/public/ws.js"></script>` : ``}
+  <div class="card">
+    <h2>Explore</h2>
+    <ul class="children">
+      ${
+        Array.isArray(children)
+          ? children.map(seg => {
+              const href = "/gate/" + encodeURIComponent(seg);
+              return `<li><a href="${href}">${seg}</a></li>`;
+            }).join("")
+          : ""
+      }
+    </ul>
+  </div>
+
+${wsEnabled ? `
+  <script src="/ws/socket.io.js"></script>
+  <script defer src="/public/ws.js"></script>` : ``}
 `})
 %>

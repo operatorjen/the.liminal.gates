@@ -1,6 +1,6 @@
 import { canonicalizeSegments } from "../utils/emojiPath.js";
 
-export const EMOJI = ["🏔","〰️","🌋","💎","💐","🌳","🪵"];
+export const EMOJI = ["🏔","〰️","🌋","💎","💐","🌳","🪵","🧬","❤️‍🔥","🫘","🪱","🫟","🧩","📡"];
 
 export function makeBreadcrumb(rawPath) {
   let path = String(rawPath || "");

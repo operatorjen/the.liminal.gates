@@ -7,6 +7,7 @@ const COOKIE_NAME = "gates";
 const MAX_AGE_MS  = 7 * 24 * 3600 * 1000;
 const MAX_AGE_S   = Math.floor(MAX_AGE_MS / 1000);
 const MAX_LEAVES = 500;
+const RECENT_MAX = 8;
 const SKEY = (sid) => `gl:session:${sid}`;
 
 function b64url(buf) {
@@ -38,16 +39,27 @@ function persistStateToRedis(state, ttlMs = MAX_AGE_MS) {
   redis.set(SKEY(state.sid), payload, "PX", Math.max(1, ttlMs)).catch(() => {});
 }
 
+export function saveState(state, ttlMs = MAX_AGE_MS) {
+  persistStateToRedis(state, ttlMs);
+}
+
+export function addRecent(state, keyPath) {
+  const p = normalizeKeyPath(keyPath);
+  if (!p) return state;
+  const next = (state.recent || []).filter(x => x !== p);
+  next.push(p);
+  if (next.length > RECENT_MAX) next.splice(0, next.length - RECENT_MAX);
+  return { ...state, recent: next };
+}
+
 export async function readGateState(req) {
   try {
     const token = req.cookies?.[COOKIE_NAME];
     if (!token) return emptyState();
-
     const payload = jwt.verify(token, process.env.JWT_SECRET, { algorithms: ["HS256"] });
     if (!payload || payload.ver !== 1 || !payload.sid) return emptyState();
-
-    const { opened } = await loadStateFromRedis(payload.sid);
-    return { ver: 1, sid: payload.sid, opened };
+    const { opened, recent } = await loadStateFromRedis(payload.sid);
+    return { ver: 1, sid: payload.sid, opened, recent };
   } catch {
     return emptyState();
   }

@@ -43,6 +43,7 @@
       <script src="<%= src %>" defer></script>
     <% }); } %>
     <% if (typeof inlineJs === 'string' && inlineJs.length) { %>
+      <script src="/public/inline-tools.js"></script>
       <script><%- inlineJs %></script>
     <% } %>
   </body>
