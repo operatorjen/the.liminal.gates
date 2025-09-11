@@ -77,7 +77,7 @@ const token = jwt.sign(payload, PRIV_PEM, { algorithm: "RS256" });
 
 if (claim) {
   const id = crypto.randomBytes(16).toString("base64url");
-  const ttlSec = Math.max(30, Math.min(600, Number(ttl) || 60));
+  const ttlSec = Math.max(30, Math.min(86400, Number(ttl) || 60));
 
   const redis = new Redis(process.env.REDIS_URL || "redis://127.0.0.1:6379");
   try {

@@ -7,7 +7,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
-    <% const _styles = Array.isArray(styles) && styles.length ? styles : ['/public/style.css']; %>
+    <% const _styles = Array.isArray(styles) && styles.length ? styles : ['/style.css']; %>
     <% _styles.forEach(function(href){ %>
       <link rel="stylesheet" href="<%= href %>" />
     <% }); %>
@@ -43,7 +43,7 @@
       <script src="<%= src %>" defer></script>
     <% }); } %>
     <% if (typeof inlineJs === 'string' && inlineJs.length) { %>
-      <script src="/public/inline-tools.js"></script>
+      <script src="/inline-tools.js"></script>
       <script><%- inlineJs %></script>
     <% } %>
   </body>

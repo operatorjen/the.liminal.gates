@@ -1,0 +1,19 @@
+body {
+  background-image: url(/themes/media/1.001.jpg);
+  background-size: 100vw;
+}
+
+.card ul li a:hover {
+  background-color: #f00;
+}
+
+#messagingContent {
+  background-image: url(/themes/media/1.001.png);
+  filter: hue-rotate(170deg);
+}
+
+#messagingContent p {
+  background-color: rgba(1, 1, 1, 0.6);
+  padding: 10px;
+  margin: 4px;
+}

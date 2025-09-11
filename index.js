@@ -39,7 +39,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(cookieParser());
 
-app.use("/public", express.static(path.join(__dirname, "public")));
+app.use(express.static(path.join(__dirname, 'public')));
 
 const bannedUA = new Set(JSON.parse(await fs.readFile("./ua_banned.json", "utf8")));
 function dropFast(res, status = 410) {
@@ -80,11 +80,21 @@ app.use(async (req, _, next) => {
 app.get("/", async (req, res) => {
   const viewPath = (req.params[0] || "").split("/").filter(Boolean).join("/");
   const state = await readGateState(req);
-  const recent = (state.recent || []).map(p => ({
-    label: p,
-    href: "/view/" + p.split("/").map(encodeURIComponent).join("/")
-  }));
+  try { writeGateCookie(res, state); } catch {}
 
+  const opened = (state.opened || []).map(normalizeKeyPath);
+  const recent = opened
+    .slice()
+    .sort((a, b) => {
+      const da = a.split("/").length, db = b.split("/").length;
+      return db - da || b.localeCompare(a);
+    })
+    .slice(0, 8)
+    .map(p => ({
+      label: p.split("/").pop() || "🏔️",
+      href: "/view/" + p.split("/").map(encodeURIComponent).join("/")
+     }));
+  
   const { crumbs } = makeBreadcrumb(viewPath);
   const theme = themeForPath(viewPath) || {};
 
@@ -93,9 +103,8 @@ app.get("/", async (req, res) => {
     gatePath: "",
     chainOk: true,
     breadcrumb: crumbs,
-    opened: [],
+    opened,
     children: EMOJI,
-    nextHint: "Start by visiting any gate: /gate/🏔️",
     styles: theme.styles,
     scripts: theme.scripts,
     inlineCss: theme.inlineCss,

@@ -76,7 +76,6 @@
 
   function renderMedia(url, kind) {
     const { media } = ensureUI();
-    media.textContent = '';
     const holder = document.createElement('figure');
     const anchorId = uniqueId('media');
     holder.id = anchorId;

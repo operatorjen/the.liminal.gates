@@ -4,7 +4,7 @@ const EXACT_RAW = new Map([
   ["🧬/🧬/🧬/🧬/🧬/🫟️/🧬", {
     name: "Artificial Lifeforms",
     bodyClass: "game",
-    styles: ["/public/style.css", "/public/themes/abyss.css", "/public/themes/artificial.lifeforms.css"],
+    styles: ["/style.css", "/themes/abyss.css", "/themes/artificial.lifeforms.css"],
     inlineJs: `GatesInline.injectLinkDelayed({
       href: "https://operatorjen.github.io/artificial.lifeforms/",
       text: "Artificial Lifeforms",
@@ -18,7 +18,7 @@ const EXACT_RAW = new Map([
   ["❤‍🔥️/❤‍🔥️/❤‍🔥️/❤‍🔥️/❤‍🔥️/🧬/❤‍🔥️", {
     name: "Multi-Consumer State Visualization",
     bodyClass: "game",
-    styles: ["/public/style.css", "/public/themes/abyss.css", "/public/themes/mcsv.css"],
+    styles: ["/style.css", "/themes/abyss.css", "/themes/mcsv.css"],
     inlineJs: `GatesInline.injectLinkDelayed({
       href: "https://operatorjen.github.io/mcsv/",
       text: "Multi-Consumer State Visualization",
@@ -32,7 +32,7 @@ const EXACT_RAW = new Map([
   ["🫘️/🫘️/🫘️/🫘️/🫘️/❤‍🔥️/🫘️", {
     name: "Bean Sims",
     bodyClass: "game",
-    styles: ["/public/style.css", "/public/themes/abyss.css", "/public/themes/bean.sims.css"],
+    styles: ["/style.css", "/themes/abyss.css", "/themes/bean.sims.css"],
     inlineJs: `GatesInline.injectLinkDelayed({
       href: "https://operatorjen.github.io/bean.sims/",
       text: "Bean Sims",
@@ -46,7 +46,7 @@ const EXACT_RAW = new Map([
   ["🪱️/🪱️/🪱️/🪱️/🪱️/🫘️/🪱️", {
     name: "1k Quantum Worm",
     bodyClass: "game",
-    styles: ["/public/style.css", "/public/themes/abyss.css", "/public/themes/1k.quantumworm.css"],
+    styles: ["/style.css", "/themes/abyss.css", "/themes/1k.quantumworm.css"],
     inlineJs: `GatesInline.injectLinkDelayed({
       href: "https://operatorjen.github.io/1k.quantumworm/",
       text: "1k Quantum Worm",
@@ -60,7 +60,7 @@ const EXACT_RAW = new Map([
   ["🫟️/🫟️/🫟️/🫟️/🫟️/🪱️/🫟️", {
     name: "Art of Noise",
     bodyClass: "game",
-    styles: ["/public/style.css", "/public/themes/abyss.css", "/public/themes/art.of.noise.css"],
+    styles: ["/style.css", "/themes/abyss.css", "/themes/art.of.noise.css"],
     inlineJs: `GatesInline.injectLinkDelayed({
       href: "https://operatorjen.github.io/art.of.noise/",
       text: "Art of Noise",
@@ -74,7 +74,7 @@ const EXACT_RAW = new Map([
   ["🧩️/🧩️/🧩️/🧩️/🧩️/🫟️/🧩️", {
     name: "Systems as Games",
     bodyClass: "game",
-    styles: ["/public/style.css", "/public/themes/abyss.css", "/public/themes/systems.as.games.css"],
+    styles: ["/style.css", "/themes/abyss.css", "/themes/systems.as.games.css"],
     inlineJs: `GatesInline.injectLinkDelayed({
       href: "https://github.com/operatorjen/systems.as.games/blob/main/TRAIL.md",
       text: "Systems as Games",
@@ -88,7 +88,7 @@ const EXACT_RAW = new Map([
   ["📡️/📡️/📡️/📡️/📡️/🧩️/📡️", {
     name: "Signals as Games",
     bodyClass: "game",
-    styles: ["/public/style.css", "/public/themes/abyss.css", "/public/themes/signals.as.games.css"],
+    styles: ["/style.css", "/themes/abyss.css", "/themes/signals.as.games.css"],
      inlineJs: `GatesInline.injectLinkDelayed({
       href: "https://github.com/operatorjen/signals.as.games/blob/main/WELCOME.md",
       text: "Signals as Games",
@@ -102,13 +102,14 @@ const EXACT_RAW = new Map([
 ]);
 
 const REPEAT = {
-  // "🧬": {
-  //   3: {
-  //     name: "",
-  //     bodyClass: "",
-  //     styles: ["/public/style.css"]
-  //   }
-  // }
+  "💐": {
+    10: {
+      name: "",
+      bodyClass: "",
+      styles: ["/style.css", "/themes/abyss.css", "/themes/pin.css"],
+      ws: true
+    }
+  }
 };
 
 function norm(path) {
@@ -148,7 +149,7 @@ export function themeForPath(keyPath) {
     return {
       name: "abyss",
       bodyClass: "theme-abyss",
-      styles: ["/public/style.css", "/public/themes/abyss.css"],
+      styles: ["/style.css", "/themes/abyss.css"],
       ws: true
     };
   }
@@ -157,7 +158,7 @@ export function themeForPath(keyPath) {
     return {
       name: "liminal",
       bodyClass: "theme-liminal",
-      styles: ["/public/style.css", "/public/themes/liminal.css"],
+      styles: ["/style.css", "/themes/liminal.css"],
       ws: false
     };
   }

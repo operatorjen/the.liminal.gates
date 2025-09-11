@@ -190,6 +190,11 @@ gatesRouter.get(/^\/view\/(.*)$/, async (req, res) => {
     forceEmojiPresentationPath(`${keyPath}/${sym}`)
   );
 
+  const recent = (state.recent || []).map(p => ({
+    label: p,
+    href: "/view/" + p.split("/").map(encodeURIComponent).join("/")
+  }));
+
   const theme = themeForPath(keyPath) || {};
   res.render("view", {
     title: "",
@@ -205,6 +210,6 @@ gatesRouter.get(/^\/view\/(.*)$/, async (req, res) => {
     inlineJs: theme.inlineJs,
     bodyClass: theme.bodyClass,
     wsEnabled: !!theme.ws,
-    recent: [],
+    recent
   });
 });

@@ -7,6 +7,7 @@ import fs from "fs";
 import crypto from "crypto";
 import jwt from "jsonwebtoken";
 import { redis } from "../utils/redis.js";
+import { isLinkPreviewBot } from "../utils/linkPreview.js";
 import { isEmojiPath, forceEmojiPresentationPath, normalizeKeyPath } from "../utils/emojiPath.js";
 import { readGateState, writeGateCookie, addGate } from "../utils/jwt.js";
 
@@ -40,6 +41,17 @@ function rateLimit({ windowSec = 60, max = 30 } = {}) {
     next();
   };
 }
+
+function softPreviewHTML(origin) {
+  return `<!doctype html>
+<meta name="robots" content="noindex,nofollow,noarchive,nosnippet">
+<meta property="og:title" content="Jump Link" />
+<meta property="og:description" content="One-time link. Open in a browser to activate." />
+<meta property="og:url" content="${origin || ""}" />
+<title>Jump Link</title>
+<body><p>This is a one-time jump link. Open it in your browser to activate.</p></body>`;
+}
+
 
 async function processToken(req, res, token) {
   if (!PUB_PEM) return res.status(503).type("text/plain").send("Jump disabled");
@@ -95,7 +107,11 @@ async function processToken(req, res, token) {
 }
 
 jumpRouter.get("/jump", (req, res) => {
-  ensureCsrfSecret(req, res);
+  if (isLinkPreviewBot(req)) {
+    res.set("Cache-Control", "public, max-age=300, immutable");
+    return res.status(200).type("text/html").send(softPreviewHTML(req.protocol + "://" + req.get("host")));
+  }
+
   const csrfToken = createCsrfToken(req, res);
 
   res.setHeader(
@@ -120,9 +136,12 @@ jumpRouter.get("/jump", (req, res) => {
 });
 
 jumpRouter.get("/jump/claim/:id", async (req, res) => {
-  ensureCsrfSecret(req, res);
-  const csrfToken = createCsrfToken(req, res);
+  if (isLinkPreviewBot(req)) {
+    res.set("Cache-Control", "public, max-age=300, immutable");
+    return res.status(200).type("text/html").send(softPreviewHTML(req.protocol + "://" + req.get("host")));
+  }
 
+  const csrfToken = createCsrfToken(req, res);
   const id = String(req.params.id || "");
   const key = `sk:jwt:id:${id}`;
   const token = await redis.get(key);
@@ -151,6 +170,8 @@ jumpRouter.get("/jump/claim/:id", async (req, res) => {
     csrfToken 
   });
 });
+
+jumpRouter.head("/jump/claim/:id", (_req, res) => res.status(204).end());
 
 jumpRouter.post("/jump", rateLimit(), async (req, res) => {
     if (!verifyCsrfToken(req, req.body._csrf)) return res.status(403).type("text/plain").send("CSRF failed");
